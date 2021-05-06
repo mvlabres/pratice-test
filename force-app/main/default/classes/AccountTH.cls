@@ -16,6 +16,7 @@ public with sharing class AccountTH extends TriggerHandler {
 
     override
     public void beforeUpdate() {
+        this.newAccounts = utils.filterByActive(this.newAccounts);
         utils.validaCPF(this.newAccounts);
         utils.validaCNPJ(this.newAccounts);
         utils.checkAccountNumber(this.newAccounts);
@@ -23,6 +24,7 @@ public with sharing class AccountTH extends TriggerHandler {
 
     override
     public void afterUpdate() {
+        this.newAccounts = utils.filterByActive(this.newAccounts);
         this.createRelatedMember();
     }
 
