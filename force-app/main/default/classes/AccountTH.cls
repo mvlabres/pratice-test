@@ -2,11 +2,16 @@ public with sharing class AccountTH extends TriggerHandler {
 
     private List<Account> newAccounts;
     private Map<Id, Account> oldAccounts;
+    private List<Task> newTasks;
+    private List<Opportunity> newOppotunitys;
     private Utils utils;
     
     public AccountTH(List<Account> newAccounts, Map<Id, Account> oldAccounts) {
         this.newAccounts = newAccounts;
         this.oldAccounts = oldAccounts;
+        this.newTasks = new List<Task>();
+        this.newOppotunitys = new List<Opportunity>();
+
         this.utils = new Utils();
     }
 
@@ -33,11 +38,23 @@ public with sharing class AccountTH extends TriggerHandler {
         for(Account account : this.newAccounts){
             if(utils.checkAccountByRecordType(account, 'partner')){
                 this.createRelated('opportunity', account);
+
             }
 
             if(utils.checkAccountByRecordType(account, 'finalCustumer')){
                 this.createRelated('task', account);
             }
+        }
+
+        try {
+            if(newTasks.isNotEmpty()) insert newTasks;
+            if(newOppotunitys.isNotEmpty()) insert newOppotunitys;
+
+        }  catch(DmlException dmlEx){
+            throw new AuraHandledException(dmlEx.getMessage());
+        
+        }catch (Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
         }
     }
 
@@ -45,16 +62,13 @@ public with sharing class AccountTH extends TriggerHandler {
 
         try {
             if(objectRelated == 'opportunity'){
-                utils.createOpportunity(account);
+                this.newOppotunitys.add(utils.createOpportunity(account));
             } 
 
             if(objectRelated == 'task'){
-                utils.createTask(account);
+                this.newTasks.add(utils.createTask(account));
             } 
 
-        } catch(DmlException dmlEx){
-            throw new AuraHandledException(dmlEx.getMessage());
-        
         }catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
         }

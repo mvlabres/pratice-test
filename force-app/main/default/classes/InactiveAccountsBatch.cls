@@ -1,6 +1,6 @@
 global with sharing class InactiveAccountsBatch implements Database.Batchable<sObject>, Schedulable{
     
-    private final String QUERY = 'SELECT Id, Name, Inactiva__c FROM Account';
+    private final String QUERY = 'SELECT Id, Name, Inactiva__c FROM Account WHERE Inactiva__c = false';
     private Map<String, List<Opportunity>> oppsByAccountId;
     private Map<String, List<Task>> tasksByAccountId;
     private List<Account> accounts = new List<Account>();

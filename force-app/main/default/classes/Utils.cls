@@ -41,24 +41,24 @@ public with sharing class Utils {
         return getRecordTypeDeveloperName(account.RecordTypeId) == developerName;
     }
 
-    public void createOpportunity(Account account){
+    public Opportunity createOpportunity(Account account){
 
         Opportunity opp = new Opportunity();
         opp.Name = account.Name + ' – opp Parceiro';
         opp.StageName = 'Qualification';
         opp.CloseDate = Date.today().addDays(30);
         opp.AccountId = account.Id;
-        insert opp;
+        return opp;
     }
 
-    public void createTask(Account account){
+    public Task createTask(Account account){
 
         Task ts = new Task();
         ts.Subject = 'Cosumidor Final test';
         ts.WhatId = account.Id;
         ts.Status = 'Not Started';
         ts.Priority = 'Normal';
-        insert ts;
+        return ts;
 
     }
 
